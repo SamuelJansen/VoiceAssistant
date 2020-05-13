@@ -42,7 +42,7 @@ class Globals:
     DOUBLE_QUOTE = '''"'''
     TRIPLE_SINGLE_QUOTE = """'''"""
     TRIPLE_DOUBLE_QUOTE = '''"""'''
-    SPACE_HIFEN_SPACE = ''' - '''
+    SPACE_DASH_SPACE = ''' - '''
 
     BASE_API_PATH = f'api{BACK_SLASH}src{BACK_SLASH}'
     LOCAL_GLOBALS_API_PATH = f'domain{BACK_SLASH}control{BACK_SLASH}'
