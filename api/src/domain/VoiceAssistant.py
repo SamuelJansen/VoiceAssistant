@@ -1,31 +1,58 @@
-import os, sys, re, speech_recognition, time
+import os, sys, re, speech_recognition, time, Levenshtein
 import win32com.client as wincl
 
 import GitCommitter
 
 class VoiceAssistant:
 
+    NO_CONTENT = '__NO_CONTENT__'
+
+    DISPATCH_ARGUMENT = "SAPI.SpVoice"
+
     EXCEPTION = 'Exception'
     STOP_RUNNING = ['stop','quit','exit','shut up','quiet','sleep','thanks']
 
     def run(self):
-        self.speaking = True
-        while self.speaking :
+        self.awake = True
+        gitCommitter = self.gitCommitter
+        globals = self.globals
+
+        skip = False
+        choosenCommandSoFar = None
+        while self.awake :
             content = self.listen()
-            if content not in VoiceAssistant.STOP_RUNNING :
+            if content == VoiceAssistant.NO_CONTENT :
+                skip = True
+            if choosenCommandSoFar :
+                print('in execute rotine')
+                skip = True
+                if 'execute' == content :
+                    print(f'choosenCommandSoFar = {choosenCommandSoFar}')
+                    if choosenCommandSoFar == GitCommitter.COMMAND_ADD_COMMIT_PUSH_ALL :
+                        branchName = input('type the branch name: ')
+                        gitCommitter.handleSystemCommand([gitCommitter.GIT_COMMITTER,GitCommitter.COMMAND_ADD_COMMIT_PUSH_ALL,branchName])
+            choosenCommandSoFar = None
+            shortestDistanceSoFar = 1000000
+            if content not in VoiceAssistant.STOP_RUNNING and not skip :
                 self.speak(content)
                 gitCommand = ''
                 splittedContent = content.split()
-                if 'git committer' in splittedContent :
-                    gitCommand += 'git-committer '
-                    splittedContent.remove('git committer')
-                if 'git add all' in splittedContent :
-                    gitCommand += 'add-all '
-                    splittedContent.remove('add all')
+                for command in self.commandList :
+                    distance = Levenshtein.distance(content,globals.SPACE.join(command.split(globals.DASH)))
+                    print(f'content = {content}, command = {command}, distance = {distance}')
+                    if choosenCommandSoFar :
+                        if distance < shortestDistanceSoFar :
+                            choosenCommandSoFar = str(command)
+                            shortestDistanceSoFar = distance * 1
+                    else :
+                        choosenCommandSoFar = str(command)
+                        shortestDistanceSoFar = distance * 1
+                choosenCommand = choosenCommandSoFar
+                print(f'choosenCommand = {choosenCommand}')
+            elif content in VoiceAssistant.STOP_RUNNING :
+                self.awake = False
             else :
-                # sys.argv = 'git-committer git-add-commit-push-all "feat(git-clone-all-command-run)"'.split()
-                # self.gitCommitter.handleSystemCommand()
-                self.speaking = False
+                skip = False
 
     def __init__(self,globals) :
 
@@ -33,20 +60,21 @@ class VoiceAssistant:
         self.brain = speech_recognition
         self.ears = self.brain.Microphone
         self.listenner = self.brain.Recognizer()
-        self.speaker = wincl.Dispatch("SAPI.SpVoice")
+        self.speaker = wincl.Dispatch(VoiceAssistant.DISPATCH_ARGUMENT)
 
         self.gitCommitter = GitCommitter.GitCommitter(self.globals)
+        self.commandList = self.gitCommitter.commandSet.keys()
 
         self.running = False
 
     def listen(self):
         debug = self.globals.debug
         with self.ears() as listenning :
-            debug('ready')
+            debug('Voice assistant ready')
             audioContent = self.listenner.listen(listenning)
-            content = ''
+            content = VoiceAssistant.NO_CONTENT
             try :
-                debug('listenning')
+                debug('Voice assistant listenning')
                 content = self.listenner.recognize_google(audioContent)
             except Exception as exception :
                 debug(f'{VoiceAssistant.EXCEPTION} {str(exception)}')

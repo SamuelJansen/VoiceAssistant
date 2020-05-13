@@ -1,6 +1,6 @@
 Globals:
-  update-globals: False
-  print-status: False
-  api:
-    list: [Globals,VoiceAssistant,GitCommitter,SeleniumHelper,SwaggerIntegrationTests,OfficeTrackIntegrationTests]
-    extension: yml
+    update-globals: True
+    print-status: False
+        api:
+            list: [Globals,VoiceAssistant,GitCommitter,SeleniumHelper,SwaggerIntegrationTests,OfficeTrackIntegrationTests]
+            extension: yml

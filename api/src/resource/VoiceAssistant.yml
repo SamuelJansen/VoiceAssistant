@@ -1,16 +1,18 @@
 VoiceAssistant:
-  api:
-    extension: yml
-    dependency:
-      update: False
-      list: [pywin32,SpeechRecognition,selenium,pyaudio,Popen,Path]
-    git:
-      url: https://github.com/SamuelJansen/
-      extension: git
+    api:
+        extension: yml
+        dependency:
+            update: False
+            list: [pywin32,SpeechRecognition,selenium,Popen,Path] ### pyaudio,python-Levenshtein
+            resource:
+                list: [PyAudio-0.2.11-cp38-cp38-win32.whl,python_Levenshtein-0.12.0-cp38-cp38-win32.whl]
+        git:
+            url: https://github.com/SamuelJansen/
+            extension: git
     python:
-      version: python --version
-      py-audio:
-        install:
-          64: pip install PyAudio-0.2.11-cp38-cp38-win_amd64.whl
-          32: PyAudio-0.2.11-cp38-cp38-win32.whl
-        link: https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio
+        version: python --version
+        py-audio:
+            install:
+                64: pip install PyAudio-0.2.11-cp38-cp38-win_amd64.whl
+                32: PyAudio-0.2.11-cp38-cp38-win32.whl
+            link: https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio

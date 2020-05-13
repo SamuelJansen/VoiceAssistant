@@ -1,13 +1,15 @@
 import sys
 
-GIT_COMMITTER = 1
 if __name__ == '__main__' :
+
     from domain.control import Globals
-    if len(sys.argv) > GIT_COMMITTER and Globals.Globals.GIT_COMMITTER == sys.argv[GIT_COMMITTER] :
-        globals = Globals.Globals(debugStatus = False)
+
+    if len(sys.argv) > Globals.Globals.GIT_COMMITTER_INDEX and Globals.Globals.GIT_COMMITTER == sys.argv[Globals.Globals.GIT_COMMITTER_INDEX] :
+        globals = Globals.Globals(debugStatus = True)
         import GitCommitter
         gitCommitter = GitCommitter.GitCommitter(globals)
-        gitCommitter.handleSystemCommand()
+        gitCommitter.handleSystemCommand(sys.argv[1:])
+
     else :
         globals = Globals.Globals(debugStatus = True)
         import VoiceAssistant
