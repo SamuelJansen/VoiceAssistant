@@ -61,19 +61,19 @@ class VoiceAssistant:
         interpreted = False
         while not interpreted :
             with self.ears() as soundArround :
-                debug('Voice assistant ready')
+                # debug('Voice assistant ready')
                 self.listenner.adjust_for_ambient_noise(soundArround)
-                debug('Voice assistant listenning')
+                # debug('Voice assistant listenning')
                 audioContent = self.listenner.listen(soundArround)
                 content = VoiceAssistant.NO_CONTENT
                 try :
-                    debug('Voice assistant interpretting')
+                    # debug('Voice assistant interpretting')
                     content = self.listenner.recognize_google(audioContent,language=self.language)
                     if not content == VoiceAssistant.NO_CONTENT:
                         interpreted = True
                 except Exception as exception :
                     debug(f'{VoiceAssistant.EXCEPTION} {str(exception)}')
-        debug(f'content = {content}')
+        # debug(f'content = {content}')
         return content
 
     def speak(self,content) :
