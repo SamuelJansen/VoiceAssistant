@@ -23,7 +23,6 @@ class VoiceAssistant:
             if content not in VoiceAssistant.STOP_RUNNING :
                 if self.selectedCommand and content in VoiceAssistant.CONFIRM_COMMAND :
                     self.gitCommitter.handleSystemCommand([globals.GIT_COMMITTER,self.selectedCommand[0][1][0]])
-                    print('here!')
                 else :
                     self.selectedCommand = None
                     self.speak(content)
@@ -34,15 +33,12 @@ class VoiceAssistant:
                             gradedCommandSet[commandScore].append(command)
                         else :
                             gradedCommandSet[commandScore] = [command]
-                    # globals.debug(f'sorted({gradedCommandSet}) = {sorted(gradedCommandSet)}')
                     self.selectedCommand = sorted(gradedCommandSet.items())
                     globals.debug(f'{globals.GIT_COMMITTER} {self.selectedCommand[0][1][0]}')
-
             elif content in VoiceAssistant.STOP_RUNNING :
                 self.awake = False
 
     def __init__(self,globals) :
-
         self.globals = globals
         self.language = self.globals.getSetting(VoiceAssistant.KEY_LANGUAGE)
         self.brain = speech_recognition
