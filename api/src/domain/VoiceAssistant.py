@@ -13,15 +13,8 @@ class VoiceAssistant:
     EXCEPTION = 'Exception'
     SLEEP = ['stop','quit','exit','shut up','quiet','sleep','thanks']
 
-    def run(self):
-        self.awake = True
-        globals = self.globals
-        while self.awake :
-            content = self.listen()
-            if content not in VoiceAssistant.SLEEP :
-                self.speak(content)
-            else :
-                self.awake = False
+    def handleCommandList(self,commandList):
+        return self.run()
 
     def __init__(self,globals) :
         self.globals = globals
@@ -38,18 +31,28 @@ class VoiceAssistant:
         self.language
         self.running = False
 
+    def run(self):
+        self.awake = True
+        globals = self.globals
+        while self.awake :
+            content = self.listen()
+            if content not in VoiceAssistant.SLEEP :
+                self.speak(content)
+            else :
+                self.awake = False
+
     def listen(self):
         debug = self.globals.debug
         interpreted = False
         while not interpreted :
             with self.sound() as soundArround :
-                debug('Voice assistant ready')
+                print('Voice assistant ready')
                 self.listenner.adjust_for_ambient_noise(soundArround)
-                debug('Voice assistant listenning')
+                print('Voice assistant listenning')
                 audioContent = self.listenner.listen(soundArround)
                 content = VoiceAssistant.NO_CONTENT
                 try :
-                    debug('Voice assistant interpretting')
+                    print('Voice assistant interpretting')
                     content = self.listenner.recognize_google(audioContent,language=self.language)
                     if not content == VoiceAssistant.NO_CONTENT:
                         interpreted = True
